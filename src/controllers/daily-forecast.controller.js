@@ -25,7 +25,7 @@ export const dailyForecastController = async (ctx) => {
 
   try {
     const { data } = await axios.get(
-      `${BASE_URL}/forecast.json?key=${API_KEY}&q=${city}&days=1&aqi=no&alerts=no`
+      `${BASE_URL}/forecast.json?key=${process.env.API_KEY}&q=${city}&days=1&aqi=no&alerts=no`
     );
 
     const today = parseDayResponse(data.forecast.forecastday[0]);
