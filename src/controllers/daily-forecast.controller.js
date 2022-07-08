@@ -17,7 +17,7 @@ const createTgMessage = (today) => {
 
 const sendTgMessage = (message) => {
   const tgBot = new Telegraf(process.env.TG_BOT_TOKEN);
-  tgBot.telegram.sendMessage(Number(process.env.CHAT_ID), message);
+  tgBot.telegram.sendMessage(Number(process.env.CHAT_ID), message, { disable_notification: true });
 };
 
 export const dailyForecastController = async (ctx) => {
