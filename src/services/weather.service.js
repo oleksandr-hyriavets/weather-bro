@@ -10,6 +10,7 @@ class WeatherService {
       return this._parseResponse(response);
     } catch (err) {
       console.error("Unexpected error while fetching daily forecast");
+      throw err;
     }
   }
 

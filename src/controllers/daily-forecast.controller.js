@@ -12,7 +12,11 @@ export const dailyForecastController = async (ctx) => {
       botToken: process.env.TG_BOT_TOKEN,
       chatId: Number(process.env.CHAT_ID),
     });
+
+    ctx.status = 200;
+    ctx.body = "SUCCESS";
   } catch (err) {
-    console.error("Unexpected error", err);
+    ctx.body = "Unexpected error";
+    ctx.status = 400;
   }
 };

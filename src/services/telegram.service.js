@@ -7,6 +7,7 @@ class TelegramService {
       await tgBot.telegram.sendMessage(options.chatId, message);
     } catch (err) {
       console.error("Unexpected error while sending message", err);
+      throw err;
     }
   }
 }
