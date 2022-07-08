@@ -12,5 +12,5 @@ RUN yarn --production
 # Bundle app source
 COPY . .
 
-EXPOSE 8080
+EXPOSE $PORT
 CMD [ "yarn", "start" ]
