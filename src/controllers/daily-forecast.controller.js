@@ -10,7 +10,7 @@ export const dailyForecastController = async (ctx) => {
 
     await TelegramService.sendMessage(message, {
       botToken: process.env.TG_BOT_TOKEN,
-      chatId: Number(process.env.CHAT_ID),
+      chatId: process.env.CHAT_ID,
     });
 
     ctx.status = 200;
