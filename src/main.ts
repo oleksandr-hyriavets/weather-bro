@@ -3,7 +3,7 @@ import "dotenv/config";
 import Koa from "koa";
 import Router from "@koa/router";
 
-import { dailyForecastController } from "./controllers/daily-forecast.controller.js";
+import { dailyForecastController } from "./controllers/daily-forecast.controller";
 
 const PORT = process.env.PORT || 5000;
 
