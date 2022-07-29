@@ -1,7 +1,11 @@
 import axios from "axios";
+import { getArithmeticMean } from "../utils/math.js";
 
 const API_KEY = process.env.API_KEY;
 const BASE_URL = "http://api.weatherapi.com/v1";
+
+const ACTIVITY_HOURS_START = 9;
+const ACTIVITY_HOURS_END = 20;
 
 class WeatherService {
   async getDailyForecast({ city }) {
@@ -15,7 +19,11 @@ class WeatherService {
   }
 
   createMessage(dto) {
-    return `${dto.city} - ${dto.date}\n\nMin: ${dto.minTemp}°C\nMax: ${dto.maxTemp}°C\nAvg.: ${dto.avgTemp}°C\n\nRain chance: ${dto.rainChance}%`;
+    return `${dto.city} - ${dto.date}\n\nMin: ${dto.minTemp}°C\nMax: ${
+      dto.maxTemp
+    }°C\nAvg. (${ACTIVITY_HOURS_START}am - ${ACTIVITY_HOURS_END - 1}pm): ${
+      dto.avgTemp
+    }°C\n\nRain chance: ${dto.rainChance}%`;
   }
 
   _getFetchUrl(city) {
@@ -32,12 +40,18 @@ class WeatherService {
 
     const today = forecastday.at(0);
 
+    const avgTemp = getArithmeticMean(
+      today.hour
+        .slice(ACTIVITY_HOURS_START, ACTIVITY_HOURS_END)
+        .map((hour) => hour.temp_c)
+    );
+
     return {
       city: location.name,
       date: today.date,
       minTemp: today.day.mintemp_c,
       maxTemp: today.day.maxtemp_c,
-      avgTemp: today.day.avgtemp_c,
+      avgTemp: avgTemp.toFixed(1),
       rainChance: today.day.daily_chance_of_rain,
     };
   }
