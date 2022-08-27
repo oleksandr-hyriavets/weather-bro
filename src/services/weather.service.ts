@@ -4,8 +4,8 @@ import { getArithmeticMean } from "../utils/math";
 const API_KEY = process.env.API_KEY;
 const BASE_URL = "http://api.weatherapi.com/v1";
 
-const ACTIVITY_HOURS_START = 9;
-const ACTIVITY_HOURS_END = 20;
+export const ACTIVITY_HOURS_START = 9;
+export const ACTIVITY_HOURS_END = 20;
 
 interface CreateMessageDto {
   city: string;
