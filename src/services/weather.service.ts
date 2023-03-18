@@ -1,7 +1,8 @@
 import axios from "axios";
 import { getArithmeticMean } from "../utils/math";
+import { ConfigService } from "./config.service";
 
-const API_KEY = process.env.API_KEY;
+const API_KEY = ConfigService.get('WEATHER_API_KEY');
 const BASE_URL = "http://api.weatherapi.com/v1";
 
 export const ACTIVITY_HOURS_START = 9;

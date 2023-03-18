@@ -12,7 +12,7 @@ class CurrencyRateService {
       const { zlotyToHryvniaRate } = this.parseResponse(response);
       return zlotyToHryvniaRate;
     } catch (e) {
-      console.error("Unexpected error while getting zloty to hryvnia rate");
+      console.error("Unexpected error while getting zloty to hryvnia rate", e);
       throw e;
     }
   }

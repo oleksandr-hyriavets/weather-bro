@@ -1,4 +1,5 @@
 import { Context } from "koa";
+import { ConfigService } from "../services/config.service";
 import { CurrencyRateService } from "../services/currency-rate.service";
 
 import { TelegramService } from "../services/telegram.service";
@@ -30,8 +31,8 @@ export const dailyInfoController = async (ctx: Context) => {
     });
 
     await TelegramService.sendMessage(message, {
-      botToken: process.env.TG_BOT_TOKEN as string,
-      chatId: process.env.CHAT_ID as string,
+      botToken: ConfigService.get('TG_BOT_TOKEN'),
+      chatId: ConfigService.get('CHAT_ID'),
     });
 
     ctx.status = 200;
