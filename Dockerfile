@@ -8,6 +8,7 @@ COPY package.json ./
 COPY yarn.lock ./
 
 RUN yarn --production
+RUN yarn build
 
 # Bundle app source
 COPY . .

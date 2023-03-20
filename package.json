@@ -4,7 +4,8 @@
   "author": "Oleksandr Hyriavets",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node ./src/main.ts",
+    "build": "tsc",
+    "start": "node ./dist/main.js",
     "dev": "nodemon ./src/main.ts"
   },
   "dependencies": {
