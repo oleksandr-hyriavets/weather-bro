@@ -1,12 +1,18 @@
 import axios from "axios";
+import { IMessageable } from "../interfaces/messageable.interface";
 
 const CURRENCY_RATE_URL = "https://api.monobank.ua/bank/currency";
 
 const ZLOTY_CURRENCY_CODE = 985;
 const HRYVNIA_CURRENCY_CODE = 980;
 
-export class CurrencyRateService {
-  async getZlotyToHryvniaCurrencyRate(): Promise<string> {
+export class CurrencyRateService implements IMessageable {
+  async getMessage(): Promise<string> {
+    const rate = await this.getZlotyToHryvniaCurrencyRate();
+    return `🇺🇦 -> 🇵🇱: ${rate}`
+  }
+
+  private async getZlotyToHryvniaCurrencyRate(): Promise<string> {
     try {
       const response = await axios.get(CURRENCY_RATE_URL);
       const { zlotyToHryvniaRate } = this.parseResponse(response);

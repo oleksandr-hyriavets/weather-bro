@@ -4,8 +4,8 @@ import { CurrencyRateService } from "../services/currency-rate.service";
 
 import { TelegramService } from "../services/telegram.service";
 import { WeatherService } from "../services/weather.service";
-import { TgMessageFormatter } from "../formatters/tg-message.formatter";
 import { WordOfTheDayService } from "../services/word-of-the-day.service";
+import { ConcatMessageFormatter } from "../formatters/concat-message.formatter";
 
 export const dailyInfoController = async (ctx: Context) => {
   const { city } = ctx.request.query;
@@ -20,34 +20,17 @@ export const dailyInfoController = async (ctx: Context) => {
   const currencyRateService = new CurrencyRateService();
   const weatherService = new WeatherService();
   const telegramService = new TelegramService();
-  const tgMessageFormatter = new TgMessageFormatter();
   const wordOfTheDayService = new WordOfTheDayService();
+  const concatMessageService = new ConcatMessageFormatter();
 
   try {
-    const [
-      zlotyToHryvniaRate,
-      dailyWeatherForecast,
-      wordOfTheDay,
-    ] = await Promise.all([
-      currencyRateService.getZlotyToHryvniaCurrencyRate(),
-      weatherService.getDailyForecast({ city }),
-      wordOfTheDayService.getWordOfTheDay(),
+    const messages = await Promise.all([
+      currencyRateService.getMessage(),
+      weatherService.getMessage({ city }),
+      wordOfTheDayService.getMessage(),
     ]);
 
-    const message = tgMessageFormatter.format({
-      city: dailyWeatherForecast.city,
-      date: dailyWeatherForecast.date,
-      minTemp: dailyWeatherForecast.minTemp,
-      maxTemp: dailyWeatherForecast.maxTemp,
-      avgTemp: dailyWeatherForecast.avgTemp,
-      rainChance: dailyWeatherForecast.rainChance,
-      zlotyToHryvniaRate,
-      // @todo change to Array.prototype.at
-      activityHoursStart: weatherService.getActivityHours()[0],
-      activityHoursEnd: weatherService.getActivityHours()[1],
-      wordOfTheDayUkranian: wordOfTheDay.ukranian,
-      wordOfTheDayPolish: wordOfTheDay.polish,
-    });
+    const message = concatMessageService.format(messages)
 
     await telegramService.sendMessage(message, {
       botToken: ConfigService.get('TG_BOT_TOKEN'),

@@ -1,3 +1,5 @@
+import { IMessageable } from "../interfaces/messageable.interface";
+
 const wordsDictionary = {
     'dzień': 'день',
     'samohód': 'автомобіль'
@@ -8,8 +10,13 @@ type WordOfTheDayReturnType = {
     ukranian: string;
 }
 
-export class WordOfTheDayService {
-    async getWordOfTheDay(): Promise<WordOfTheDayReturnType> {
+export class WordOfTheDayService implements IMessageable {
+    async getMessage(): Promise<string> {
+        const word = await this.getWordOfTheDay();
+        return `The word of the day: ${word.polish} - ${word.ukranian}`
+    }
+
+    private async getWordOfTheDay(): Promise<WordOfTheDayReturnType> {
         const polish = this.getRandomKeyFromDictionary(wordsDictionary);
 
         return {

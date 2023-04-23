@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getArithmeticMean } from "../utils/math";
 import { ConfigService } from "./config.service";
+import { IMessageable } from "../interfaces/messageable.interface";
 
 const API_KEY = ConfigService.get('WEATHER_API_KEY');
 const BASE_URL = "http://api.weatherapi.com/v1";
@@ -14,11 +15,21 @@ interface CreateMessageDto {
   rainChance: string;
 }
 
-export class WeatherService {
+export class WeatherService implements IMessageable {
   private activityHoursStart = 9;
   private activityHoursEnd = 20;
 
-  async getDailyForecast({ city }: { city: string }) {
+  async getMessage({ city }: { city: string }): Promise<string>  {
+    const weather = await this.getDailyForecast({ city });
+
+    return `${weather.city} 🇵🇱 - ${weather.date}\n\nMin: ${weather.minTemp}°C\nMax: ${
+      weather.maxTemp
+    }°C\nAvg. (${this.activityHoursStart}am - ${this.activityHoursEnd - 1}pm): ${
+      weather.avgTemp
+    }°C\n\n🌧️ Rain Chance: ${weather.rainChance}%`
+  }
+
+  private async getDailyForecast({ city }: { city: string }) {
     try {
       const response = await axios.get(this.getFetchUrl(city));
       return this.parseResponse(response);
