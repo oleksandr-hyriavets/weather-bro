@@ -27,7 +27,7 @@ export class WordOfTheDayService implements IMessageable {
 
     private getRandomKeyFromDictionary<T extends Object>(dictionary: T): keyof T {
         const keys = Object.keys(dictionary);
-        const randIndex = Math.random() * 1000 % keys.length;
+        const randIndex = Math.round(Math.random() * 1000 % (keys.length - 1));
 
         return keys[randIndex] as keyof T
     }

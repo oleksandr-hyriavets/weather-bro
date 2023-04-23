@@ -25,8 +25,8 @@ export const dailyInfoController = async (ctx: Context) => {
 
   try {
     const messages = await Promise.all([
-      currencyRateService.getMessage(),
       weatherService.getMessage({ city }),
+      currencyRateService.getMessage(),
       wordOfTheDayService.getMessage(),
     ]);
 
