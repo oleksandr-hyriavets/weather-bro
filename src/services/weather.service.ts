@@ -28,14 +28,6 @@ export class WeatherService {
     }
   }
 
-  createMessage(dto: CreateMessageDto) {
-    return `${dto.city} - ${dto.date}\n\nMin: ${dto.minTemp}°C\nMax: ${
-      dto.maxTemp
-    }°C\nAvg. (${ACTIVITY_HOURS_START}am - ${ACTIVITY_HOURS_END - 1}pm): ${
-      dto.avgTemp
-    }°C\n\nRain chance: ${dto.rainChance}%`;
-  }
-
   _getFetchUrl(city: string) {
     return `${BASE_URL}/forecast.json?key=${API_KEY}&q=${city}&days=1&aqi=no&alerts=no`;
   }
