@@ -5,7 +5,7 @@ const CURRENCY_RATE_URL = "https://api.monobank.ua/bank/currency";
 const ZLOTY_CURRENCY_CODE = 985;
 const HRYVNIA_CURRENCY_CODE = 980;
 
-class CurrencyRateService {
+export class CurrencyRateService {
   async getZlotyToHryvniaCurrencyRate(): Promise<string> {
     try {
       const response = await axios.get(CURRENCY_RATE_URL);
@@ -30,6 +30,3 @@ class CurrencyRateService {
     };
   }
 }
-
-const currencyRateService = new CurrencyRateService();
-export { currencyRateService as CurrencyRateService };

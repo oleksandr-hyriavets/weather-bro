@@ -16,7 +16,7 @@ interface CreateMessageDto {
   zlotyToHryvniaRate: string;
 }
 
-class TelegramService {
+export class TelegramService {
   async sendMessage(message: string, options: SendMessageOptions) {
     try {
       const tgBot = new Telegraf(options.botToken);
@@ -37,6 +37,3 @@ class TelegramService {
     }`;
   }
 }
-
-const telegramService = new TelegramService();
-export { telegramService as TelegramService };

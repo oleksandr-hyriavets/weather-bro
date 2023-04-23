@@ -15,12 +15,16 @@ export const dailyInfoController = async (ctx: Context) => {
     return ctx;
   }
 
+  const currencyRateService = new CurrencyRateService();
+  const weatherService = new WeatherService();
+  const telegramService = new TelegramService();
+
   try {
     const [zlotyToHryvniaRate, dailyWeatherForecast] = await Promise.all([
-      CurrencyRateService.getZlotyToHryvniaCurrencyRate(),
-      WeatherService.getDailyForecast({ city }),
+      currencyRateService.getZlotyToHryvniaCurrencyRate(),
+      weatherService.getDailyForecast({ city }),
     ]);
-    const message = TelegramService.createMessage({
+    const message = telegramService.createMessage({
       city: dailyWeatherForecast.city,
       date: dailyWeatherForecast.date,
       minTemp: dailyWeatherForecast.minTemp,
@@ -30,7 +34,7 @@ export const dailyInfoController = async (ctx: Context) => {
       zlotyToHryvniaRate,
     });
 
-    await TelegramService.sendMessage(message, {
+    await telegramService.sendMessage(message, {
       botToken: ConfigService.get('TG_BOT_TOKEN'),
       chatId: ConfigService.get('CHAT_ID'),
     });

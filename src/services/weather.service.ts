@@ -17,7 +17,7 @@ interface CreateMessageDto {
   rainChance: string;
 }
 
-class WeatherService {
+export class WeatherService {
   async getDailyForecast({ city }: { city: string }) {
     try {
       const response = await axios.get(this._getFetchUrl(city));
@@ -66,6 +66,3 @@ class WeatherService {
     };
   }
 }
-
-const weatherService = new WeatherService();
-export { weatherService as WeatherService };
