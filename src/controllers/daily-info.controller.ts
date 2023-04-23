@@ -3,7 +3,8 @@ import { ConfigService } from "../services/config.service";
 import { CurrencyRateService } from "../services/currency-rate.service";
 
 import { TelegramService } from "../services/telegram.service";
-import { WeatherService } from "../services/weather.service";
+import { ACTIVITY_HOURS_END, ACTIVITY_HOURS_START, WeatherService } from "../services/weather.service";
+import { TgMessageFormatter } from "../formatters/tg-message.formatter";
 
 export const dailyInfoController = async (ctx: Context) => {
   const { city } = ctx.request.query;
@@ -18,13 +19,15 @@ export const dailyInfoController = async (ctx: Context) => {
   const currencyRateService = new CurrencyRateService();
   const weatherService = new WeatherService();
   const telegramService = new TelegramService();
+  const tgMessageFormatter = new TgMessageFormatter();
 
   try {
     const [zlotyToHryvniaRate, dailyWeatherForecast] = await Promise.all([
       currencyRateService.getZlotyToHryvniaCurrencyRate(),
       weatherService.getDailyForecast({ city }),
     ]);
-    const message = telegramService.createMessage({
+
+    const message = tgMessageFormatter.format({
       city: dailyWeatherForecast.city,
       date: dailyWeatherForecast.date,
       minTemp: dailyWeatherForecast.minTemp,
@@ -32,6 +35,8 @@ export const dailyInfoController = async (ctx: Context) => {
       avgTemp: dailyWeatherForecast.avgTemp,
       rainChance: dailyWeatherForecast.rainChance,
       zlotyToHryvniaRate,
+      activityHoursStart: ACTIVITY_HOURS_START,
+      activityHoursEnd: ACTIVITY_HOURS_END,
     });
 
     await telegramService.sendMessage(message, {
