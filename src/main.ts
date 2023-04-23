@@ -13,4 +13,4 @@ const router = new Router();
 
 router.get("/daily-info", dailyInfoController);
 
-app.use(router.routes()).use(router.allowedMethods()).listen(PORT).on('listening', () => console.log('Listening'));
+app.use(router.routes()).use(router.allowedMethods()).listen(PORT).on('listening', () => console.log(`Listening on port ${PORT}`));
