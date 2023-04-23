@@ -5,9 +5,6 @@ import { ConfigService } from "./config.service";
 const API_KEY = ConfigService.get('WEATHER_API_KEY');
 const BASE_URL = "http://api.weatherapi.com/v1";
 
-export const ACTIVITY_HOURS_START = 9;
-export const ACTIVITY_HOURS_END = 20;
-
 interface CreateMessageDto {
   city: string;
   date: string;
@@ -18,21 +15,28 @@ interface CreateMessageDto {
 }
 
 export class WeatherService {
+  private activityHoursStart = 9;
+  private activityHoursEnd = 20;
+
   async getDailyForecast({ city }: { city: string }) {
     try {
-      const response = await axios.get(this._getFetchUrl(city));
-      return this._parseResponse(response);
+      const response = await axios.get(this.getFetchUrl(city));
+      return this.parseResponse(response);
     } catch (err) {
       console.error("Unexpected error while fetching daily forecast");
       throw err;
     }
   }
 
-  _getFetchUrl(city: string) {
+  getActivityHours(): [number, number] {
+    return [this.activityHoursStart, this.activityHoursEnd]
+  }
+
+  private getFetchUrl(city: string) {
     return `${BASE_URL}/forecast.json?key=${API_KEY}&q=${city}&days=1&aqi=no&alerts=no`;
   }
 
-  _parseResponse(response: any) {
+  private parseResponse(response: any) {
     const {
       data: {
         forecast: { forecastday },
@@ -44,7 +48,7 @@ export class WeatherService {
 
     const avgTemp = getArithmeticMean(
       today.hour
-        .slice(ACTIVITY_HOURS_START, ACTIVITY_HOURS_END)
+        .slice(this.activityHoursStart, this.activityHoursEnd)
         .map((hour: { temp_c: number }) => hour.temp_c)
     );
 

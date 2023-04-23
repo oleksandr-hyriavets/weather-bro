@@ -3,7 +3,7 @@ import { ConfigService } from "../services/config.service";
 import { CurrencyRateService } from "../services/currency-rate.service";
 
 import { TelegramService } from "../services/telegram.service";
-import { ACTIVITY_HOURS_END, ACTIVITY_HOURS_START, WeatherService } from "../services/weather.service";
+import { WeatherService } from "../services/weather.service";
 import { TgMessageFormatter } from "../formatters/tg-message.formatter";
 
 export const dailyInfoController = async (ctx: Context) => {
@@ -35,8 +35,9 @@ export const dailyInfoController = async (ctx: Context) => {
       avgTemp: dailyWeatherForecast.avgTemp,
       rainChance: dailyWeatherForecast.rainChance,
       zlotyToHryvniaRate,
-      activityHoursStart: ACTIVITY_HOURS_START,
-      activityHoursEnd: ACTIVITY_HOURS_END,
+      // @todo change to Array.prototype.at
+      activityHoursStart: weatherService.getActivityHours()[0],
+      activityHoursEnd: weatherService.getActivityHours()[1],
     });
 
     await telegramService.sendMessage(message, {
