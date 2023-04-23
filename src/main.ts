@@ -18,7 +18,7 @@ class DailyInfo {
         this.router.get("/daily-info", dailyInfoController);
     }
 
-    init(): void {
+    start(): void {
         const handleListening = () => console.log(`Listening on port ${this.port}`);
 
         this.app.use(this.router.routes())
@@ -34,4 +34,4 @@ const router = new Router();
 const dailyInfo = new DailyInfo(router, app);
 
 dailyInfo.defineEndpoints();
-dailyInfo.init();
+dailyInfo.start();
