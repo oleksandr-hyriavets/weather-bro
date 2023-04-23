@@ -10,6 +10,8 @@ interface FormatTgMessageDto {
     zlotyToHryvniaRate: string;
     activityHoursStart: number;
     activityHoursEnd: number;
+    wordOfTheDayUkranian: string;
+    wordOfTheDayPolish: string;
 }
 
 export class TgMessageFormatter implements BaseFormatter {
