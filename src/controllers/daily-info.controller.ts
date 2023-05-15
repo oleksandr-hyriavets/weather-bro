@@ -6,6 +6,7 @@ import { TelegramService } from "../services/telegram.service";
 import { WeatherService } from "../services/weather.service";
 // import { WordOfTheDayService } from "../services/word-of-the-day.service";
 import { ConcatMessageFormatter } from "../formatters/concat-message.formatter";
+import { EventsService } from "../services/events.service";
 
 export const dailyInfoController = async (ctx: Context) => {
   const { city } = ctx.request.query;
@@ -22,11 +23,13 @@ export const dailyInfoController = async (ctx: Context) => {
   const telegramService = new TelegramService();
   // const wordOfTheDayService = new WordOfTheDayService();
   const concatMessageService = new ConcatMessageFormatter();
+  const eventsService = new EventsService();
 
   try {
     const messages = await Promise.all([
       weatherService.getMessage({ city }),
       currencyRateService.getMessage(),
+      eventsService.getMessage()
       // wordOfTheDayService.getMessage(),
     ]);
 
