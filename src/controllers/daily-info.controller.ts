@@ -31,7 +31,7 @@ export const dailyInfoController = async (ctx: Context) => {
       currencyRateService.getMessage(),
       eventsService.getMessage()
       // wordOfTheDayService.getMessage(),
-    ]);
+    ].map(promise => promise.catch(() => '')));
 
     const message = concatMessageService.format(messages)
 
