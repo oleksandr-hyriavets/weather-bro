@@ -7,8 +7,13 @@ import { WeatherService } from "../services/weather.service";
 // import { WordOfTheDayService } from "../services/word-of-the-day.service";
 import { ConcatMessageFormatter } from "../formatters/concat-message.formatter";
 import { EventsService } from "../services/events.service";
+import { DailyInfoService } from "../services/daily-info.service";
 
-export const dailyInfoController = async (ctx: Context) => {
+type Params = {
+  telegramService: TelegramService
+}
+
+export const dailyInfoController = async (ctx: Context, { telegramService }: Params) => {
   const { city } = ctx.request.query;
 
   if (typeof city !== "string") {
@@ -18,27 +23,13 @@ export const dailyInfoController = async (ctx: Context) => {
     return ctx;
   }
 
-  const currencyRateService = new CurrencyRateService();
-  const weatherService = new WeatherService();
-  const telegramService = new TelegramService();
-  // const wordOfTheDayService = new WordOfTheDayService();
-  const concatMessageService = new ConcatMessageFormatter();
-  const eventsService = new EventsService();
-
+  const dailyInfoService = new DailyInfoService(telegramService)
+  
   try {
-    const messages = await Promise.all([
-      weatherService.getMessage({ city }),
-      currencyRateService.getMessage(),
-      eventsService.getMessage()
-      // wordOfTheDayService.getMessage(),
-    ].map(promise => promise.catch(() => '')));
-
-    const message = concatMessageService.format(messages)
-
-    await telegramService.sendMessage(message, {
-      botToken: ConfigService.get('TG_BOT_TOKEN'),
+    await dailyInfoService.post({
+      city,
       chatId: ConfigService.get('CHAT_ID'),
-    });
+    })
 
     ctx.status = 200;
     ctx.body = "SUCCESS";
