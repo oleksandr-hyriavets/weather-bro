@@ -36,7 +36,7 @@ export class DailyInfoApp {
                 }
             },
             {
-                name: '/sendDailyInfo',
+                name: '/dailyInfo',
                 handler: async ({ chatId }) => {
                     const dailyInfoService = new DailyInfoService(this.telegramService)
                     try {
