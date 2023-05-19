@@ -14,7 +14,7 @@ type RawCommandCtx = NarrowedContext<Context<Update>, {
 
 export type CommandCtx = {
   messageText: string;
-  chatId: number;
+  chatId: string;
 }
 
 type Command = {
@@ -48,7 +48,7 @@ export class TelegramService implements IMessageBroker {
   private parseCommandCtx(ctx: RawCommandCtx): CommandCtx {
     return {
       messageText: ctx.update.message.text,
-      chatId: ctx.chat.id,
+      chatId: ctx.chat.id.toString(),
     }
   }
 }

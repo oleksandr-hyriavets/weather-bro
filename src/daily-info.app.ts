@@ -6,6 +6,7 @@ import { ConfigService } from "./services/config.service";
 import { TelegramService } from "./services/telegram.service";
 import { LocationService } from "./services/location.service";
 import { DailyInfoService } from "./services/daily-info.service";
+import { WeatherService } from "./services/weather.service";
 
 export class DailyInfoApp {
     port = ConfigService.get('PORT') || 5000;
@@ -42,7 +43,24 @@ export class DailyInfoApp {
                     try {
                         await dailyInfoService.post({
                             city: this.locationService.getLocation(),
-                            chatId: chatId.toString(),
+                            chatId,
+                        })
+                    } catch (err) {
+                        console.error(err)
+                    }
+                }
+            },
+            {
+                name: '/weather',
+                handler: async ({ chatId, messageText }) => {
+                    const weatherService = new WeatherService();
+
+                    const city = messageText.split(' ').at(1) ?? this.locationService.getLocation();
+                    
+                    try {
+                        const message = await weatherService.getMessage({ city })
+                        await this.telegramService.sendMessage(message, {
+                            chatId,
                         })
                     } catch (err) {
                         console.error(err)
