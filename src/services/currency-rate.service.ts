@@ -3,13 +3,13 @@ import { IMessageable } from "../interfaces/messageable.interface";
 
 const CURRENCY_RATE_URL = "https://api.monobank.ua/bank/currency";
 
-const ZLOTY_CURRENCY_CODE = 985;
+const EURO_CURRENCY_CODE = 978;
 const HRYVNIA_CURRENCY_CODE = 980;
 
 export class CurrencyRateService implements IMessageable {
   async getMessage(): Promise<string> {
     const rate = await this.getZlotyToHryvniaCurrencyRate();
-    return `🇺🇦 -> 🇵🇱: ${rate}`
+    return `🇺🇦 -> 🇪🇺: ${rate}`
   }
 
   private async getZlotyToHryvniaCurrencyRate(): Promise<string> {
@@ -26,7 +26,7 @@ export class CurrencyRateService implements IMessageable {
   // @todo - avoid any
   private parseResponse({ data }: any) {
     const isZlotyToHryvnia = (item: any) =>
-      item.currencyCodeA === ZLOTY_CURRENCY_CODE &&
+      item.currencyCodeA === EURO_CURRENCY_CODE &&
       item.currencyCodeB == HRYVNIA_CURRENCY_CODE;
 
     const { rateCross } = data.find(isZlotyToHryvnia);

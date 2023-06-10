@@ -22,7 +22,7 @@ export class WeatherService implements IMessageable {
   async getMessage({ city }: { city: string }): Promise<string>  {
     const weather = await this.getDailyForecast({ city });
 
-    return `${weather.city} 🇵🇱 - ${weather.date}\n\nMin: ${weather.minTemp}°C\nMax: ${
+    return `${weather.city} 🇭🇷 - ${weather.date}\n\nMin: ${weather.minTemp}°C\nMax: ${
       weather.maxTemp
     }°C\nAvg. (${this.activityHoursStart}am - ${this.activityHoursEnd - 1}pm): ${
       weather.avgTemp
