@@ -29,10 +29,10 @@ export class CurrencyRateService implements IMessageable {
       item.currencyCodeA === EURO_CURRENCY_CODE &&
       item.currencyCodeB == HRYVNIA_CURRENCY_CODE;
 
-    const { rateCross } = data.find(isZlotyToHryvnia);
+    const { rateSell } = data.find(isZlotyToHryvnia);
 
     return {
-      zlotyToHryvniaRate: rateCross as string,
+      zlotyToHryvniaRate: rateSell as string,
     };
   }
 }
