@@ -24,7 +24,7 @@ export class DailyInfoService {
         try {
             const messages = await Promise.all([
               weatherService.getMessage({ city: params.city }),
-              currencyRateService.getMessage(),
+              currencyRateService.getMessage('uah-eur'),
               eventsService.getMessage()
             ].map(promise => promise.catch(() => '')));
         

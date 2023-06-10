@@ -3,36 +3,74 @@ import { IMessageable } from "../interfaces/messageable.interface";
 
 const CURRENCY_RATE_URL = "https://api.monobank.ua/bank/currency";
 
-const EURO_CURRENCY_CODE = 978;
-const HRYVNIA_CURRENCY_CODE = 980;
+type CurrencyPair = 'uah-eur' | 'uah-zlt'
+
+type CurrencyData = {
+  title: string;
+  code: number;
+  flag: string;
+}
+
+type CurrencyPairData = {
+  from: CurrencyData,
+  to: CurrencyData,
+}
+
+const CURRENCY_PAIR_DATA_MAP: Record<CurrencyPair, CurrencyPairData> = {
+  'uah-eur': {
+    from: {
+      title: 'UAH',
+      code: 980,
+      flag: '🇺🇦',
+    },
+    to: {
+      title: 'EUR',
+      code: 978,
+      flag: '🇪🇺',
+    }
+  },
+  'uah-zlt': {
+    from: {
+      title: 'UAH',
+      code: 980,
+      flag: '🇺🇦',
+    },
+    to: {
+      title: 'ZLT',
+      code: 985,
+      flag: '🇵🇱',
+    }
+  }
+}
 
 export class CurrencyRateService implements IMessageable {
-  async getMessage(): Promise<string> {
-    const rate = await this.getZlotyToHryvniaCurrencyRate();
-    return `🇺🇦 -> 🇪🇺: ${rate}`
+  async getMessage(pair: CurrencyPair): Promise<string> {
+    const pairData = CURRENCY_PAIR_DATA_MAP[pair];
+    const rate = await this.getRate(pairData);
+    return `${pairData.from.flag} -> ${pairData.to.flag}: ${rate}`
   }
 
-  private async getZlotyToHryvniaCurrencyRate(): Promise<string> {
+  private async getRate(pairData: CurrencyPairData): Promise<string> {
     try {
       const response = await axios.get(CURRENCY_RATE_URL);
-      const { zlotyToHryvniaRate } = this.parseResponse(response);
-      return zlotyToHryvniaRate;
+      const { rate } = this.parseResponse(response, pairData);
+      return rate;
     } catch (e) {
-      console.error("Unexpected error while getting zloty to hryvnia rate", e);
+      console.error(`Unexpected error while getting ${pairData.from.title} to ${pairData.to.title} rate`, e);
       throw e;
     }
   }
 
   // @todo - avoid any
-  private parseResponse({ data }: any) {
-    const isZlotyToHryvnia = (item: any) =>
-      item.currencyCodeA === EURO_CURRENCY_CODE &&
-      item.currencyCodeB == HRYVNIA_CURRENCY_CODE;
+  private parseResponse({ data }: any, pairData: CurrencyPairData) {
+    const isTargetPair = (item: any) =>
+      item.currencyCodeA === pairData.to.code &&
+      item.currencyCodeB == pairData.from.code;
 
-    const { rateSell } = data.find(isZlotyToHryvnia);
+    const { rateSell } = data.find(isTargetPair);
 
     return {
-      zlotyToHryvniaRate: rateSell as string,
+      rate: rateSell as string,
     };
   }
 }
