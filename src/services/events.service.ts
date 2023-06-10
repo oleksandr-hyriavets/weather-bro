@@ -9,8 +9,8 @@ type Event = {
 export class EventsService implements IMessageable {
     events: Event[] = [
         {
-            date: new Date('2023-06-03'),
-            name: 'trip to Croatia',
+            date: new Date('2023-07-02'),
+            name: 'move out from the apparments at Krasica',
         },
     ]
 
