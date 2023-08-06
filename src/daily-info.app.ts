@@ -7,6 +7,8 @@ import { TelegramService } from "./services/telegram.service";
 import { LocationService } from "./services/location.service";
 import { DailyInfoService } from "./services/daily-info.service";
 import { WeatherService } from "./services/weather.service";
+import { getCurrencyRateController } from "./controllers/get-currency-rate.controller";
+import { CurrencyRateService } from "./services/currency-rate.service";
 
 export class DailyInfoApp {
     port = ConfigService.get('PORT') || 5000;
@@ -16,12 +18,16 @@ export class DailyInfoApp {
         private app: Koa<Koa.DefaultState, Koa.DefaultContext>,
         private telegramService: TelegramService,
         private locationService: LocationService,
+        private currencyRateService: CurrencyRateService,
     ) {}
 
     defineEndpoints(): void {
         this.router.get("/daily-info", (ctx) => dailyInfoController(ctx, {
             telegramService: this.telegramService
         }));
+        this.router.get('/currency-rate', (ctx) => getCurrencyRateController(ctx, {
+            currencyRateService: this.currencyRateService
+        }))
     }
 
     defineCommands(): void {

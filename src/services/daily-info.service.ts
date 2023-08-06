@@ -1,5 +1,6 @@
 import { ConcatMessageFormatter } from "../formatters/concat-message.formatter";
 import { IMessageBroker } from "../interfaces/message-broker.interface";
+import { CurrencyPair } from "../types/CurrencyPair";
 import { CurrencyRateService } from "./currency-rate.service";
 import { EventsService } from "./events.service";
 import { WeatherService } from "./weather.service";
@@ -24,7 +25,7 @@ export class DailyInfoService {
         try {
             const messages = await Promise.all([
               weatherService.getMessage({ city: params.city }),
-              currencyRateService.getMessage('uah-eur'),
+              currencyRateService.getMessage(CurrencyPair.UahEur),
               eventsService.getMessage()
             ].map(promise => promise.catch(() => '')));
         

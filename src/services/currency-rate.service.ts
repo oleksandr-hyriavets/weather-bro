@@ -1,9 +1,10 @@
 import axios from "axios";
 import { IMessageable } from "../interfaces/messageable.interface";
+import { CurrencyPair } from "../types/CurrencyPair";
+
+// https://api.monobank.ua/docs/
 
 const CURRENCY_RATE_URL = "https://api.monobank.ua/bank/currency";
-
-type CurrencyPair = 'uah-eur' | 'uah-zlt'
 
 type CurrencyData = {
   title: string;
@@ -17,7 +18,7 @@ type CurrencyPairData = {
 }
 
 const CURRENCY_PAIR_DATA_MAP: Record<CurrencyPair, CurrencyPairData> = {
-  'uah-eur': {
+  [CurrencyPair.UahEur]: {
     from: {
       title: 'UAH',
       code: 980,
@@ -29,7 +30,7 @@ const CURRENCY_PAIR_DATA_MAP: Record<CurrencyPair, CurrencyPairData> = {
       flag: '🇪🇺',
     }
   },
-  'uah-zlt': {
+  [CurrencyPair.UahZlt]: {
     from: {
       title: 'UAH',
       code: 980,
@@ -46,26 +47,51 @@ const CURRENCY_PAIR_DATA_MAP: Record<CurrencyPair, CurrencyPairData> = {
 export class CurrencyRateService implements IMessageable {
   async getMessage(pair: CurrencyPair): Promise<string> {
     const pairData = CURRENCY_PAIR_DATA_MAP[pair];
-    const rate = await this.getRate(pairData);
+    const rate = await this.getRateByCode(pairData.from.code, pairData.to.code);
     return `${pairData.from.flag} -> ${pairData.to.flag}: ${rate}`
   }
 
-  private async getRate(pairData: CurrencyPairData): Promise<string> {
+  async getRateByCode(
+    currencyFromCode: CurrencyPairData['to']['code'],
+    currencyToCode: CurrencyPairData['from']['code']
+  ): Promise<string> {
     try {
       const response = await axios.get(CURRENCY_RATE_URL);
-      const { rate } = this.parseResponse(response, pairData);
+      const { rate } = this.parseResponse(response, {
+        fromCode: currencyFromCode,
+        toCode: currencyToCode
+      });
       return rate;
     } catch (e) {
-      console.error(`Unexpected error while getting ${pairData.from.title} to ${pairData.to.title} rate`, e);
+      console.error(`Unexpected error while getting ${currencyFromCode} to ${currencyToCode} rate`, e);
+      throw e;
+    }
+  }
+
+  async getRateByPair(pair: CurrencyPair): Promise<string> {
+    const pairData = CURRENCY_PAIR_DATA_MAP[pair]
+
+    try {
+      const response = await axios.get(CURRENCY_RATE_URL);
+      const { rate } = this.parseResponse(response, {
+        fromCode: pairData.from.code,
+        toCode: pairData.to.code,
+      });
+      return rate;
+    } catch (e) {
+      console.error(`Unexpected error while getting ${pair} rate`, e);
       throw e;
     }
   }
 
   // @todo - avoid any
-  private parseResponse({ data }: any, pairData: CurrencyPairData) {
+  private parseResponse(
+    { data }: any,
+    pairData: { fromCode: CurrencyPairData['from']['code'], toCode: CurrencyPairData['to']['code'] }
+  ) {
     const isTargetPair = (item: any) =>
-      item.currencyCodeA === pairData.to.code &&
-      item.currencyCodeB == pairData.from.code;
+      item.currencyCodeA === pairData.toCode &&
+      item.currencyCodeB == pairData.fromCode;
 
     const { rateSell } = data.find(isTargetPair);
 
