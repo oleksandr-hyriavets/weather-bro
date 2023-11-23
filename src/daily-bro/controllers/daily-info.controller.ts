@@ -42,6 +42,6 @@ export const dailyInfoController = async (ctx: Context, { messageBroker, plugins
     ctx.body = "SUCCESS";
   } catch (err) {
     ctx.body = "Unexpected error";
-    ctx.status = 400;
+    ctx.status = 500;
   }
 };
