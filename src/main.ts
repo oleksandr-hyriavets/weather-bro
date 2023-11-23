@@ -1,29 +1,22 @@
 import "dotenv/config";
 
-import Koa from "koa";
-import Router from "@koa/router";
+import { DailyBro } from "./daily-bro/daily-bro";
 
-import { DailyInfoApp } from "./daily-info.app";
-import { TelegramService } from "./services/telegram.service";
-import { ConfigService } from "./services/config.service";
-import { LocationService } from "./services/location.service";
-import { CurrencyRateService } from "./services/currency-rate.service";
+import { TelegramService } from "./message-brokers/telegram.service";
+import { ConfigService } from "./config.service";
 
-const app = new Koa();
-const router = new Router();
+import { EventsPlugin } from "./plugins/events/events.plugin";
+import { WeatherPlugin } from "./plugins/weather/weather.plugin";
+import { CurrencyRatePlugin } from "./plugins/currency-rate/currency-rate.plugin";
 
-const telegramService = new TelegramService(ConfigService.get('TG_BOT_TOKEN'))
-const locationService = new LocationService();
-const currencyRateService = new CurrencyRateService()
+const dailyBro = new DailyBro({
+    messageBroker: new TelegramService(ConfigService.get('TG_BOT_TOKEN')),
 
-const dailyInfo = new DailyInfoApp(
-    router,
-    app,
-    telegramService,
-    locationService,
-    currencyRateService,
-);
+    plugins: [
+        new WeatherPlugin(),
+        new CurrencyRatePlugin(),
+        new EventsPlugin(),
+    ]
+})
 
-dailyInfo.defineEndpoints();
-dailyInfo.defineCommands();
-dailyInfo.start();
+dailyBro.start()

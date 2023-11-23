@@ -1,21 +1,13 @@
 import axios from "axios";
-import { getArithmeticMean } from "../utils/math";
-import { ConfigService } from "./config.service";
-import { IMessageable } from "../interfaces/messageable.interface";
+
+import { getArithmeticMean } from "./utils/math";
+import { ConfigService } from "../../config.service"
+import { IPlugin } from "../../daily-bro/daily-bro";
 
 const API_KEY = ConfigService.get('WEATHER_API_KEY');
 const BASE_URL = "http://api.weatherapi.com/v1";
 
-interface CreateMessageDto {
-  city: string;
-  date: string;
-  minTemp: string;
-  maxTemp: string;
-  avgTemp: string;
-  rainChance: string;
-}
-
-export class WeatherService implements IMessageable {
+export class WeatherPlugin implements IPlugin {
   private activityHoursStart = 9;
   private activityHoursEnd = 20;
 
@@ -37,10 +29,6 @@ export class WeatherService implements IMessageable {
       console.error("Unexpected error while fetching daily forecast");
       throw err;
     }
-  }
-
-  getActivityHours(): [number, number] {
-    return [this.activityHoursStart, this.activityHoursEnd]
   }
 
   private getFetchUrl(city: string) {

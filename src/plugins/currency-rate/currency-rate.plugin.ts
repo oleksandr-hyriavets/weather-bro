@@ -1,10 +1,14 @@
 import axios from "axios";
-import { IMessageable } from "../interfaces/messageable.interface";
-import { CurrencyPair } from "../types/CurrencyPair";
+
+import { IPlugin } from "../../daily-bro/daily-bro";
 
 // https://api.monobank.ua/docs/
-
 const CURRENCY_RATE_URL = "https://api.monobank.ua/bank/currency";
+
+const enum CurrencyPair {
+    UahEur = 'UahEur',
+    UahZlt = 'UahZlt'
+}
 
 type CurrencyData = {
   title: string;
@@ -44,9 +48,9 @@ const CURRENCY_PAIR_DATA_MAP: Record<CurrencyPair, CurrencyPairData> = {
   }
 }
 
-export class CurrencyRateService implements IMessageable {
-  async getMessage(pair: CurrencyPair): Promise<string> {
-    const pairData = CURRENCY_PAIR_DATA_MAP[pair];
+export class CurrencyRatePlugin implements IPlugin {
+  async getMessage(): Promise<string> {
+    const pairData = CURRENCY_PAIR_DATA_MAP[CurrencyPair.UahEur];
     const rate = await this.getRateByCode(pairData.from.code, pairData.to.code);
     return `${pairData.from.flag} -> ${pairData.to.flag}: ${rate}`
   }

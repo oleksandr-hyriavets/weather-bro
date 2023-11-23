@@ -1,16 +1,16 @@
-import { IMessageable } from "../interfaces/messageable.interface";
-import { getDateDifferenceInDays } from "../utils/date";
+import { IPlugin } from "../../daily-bro/daily-bro";
+import { getDateDifferenceInDays } from "./utils/date";
 
 type Event = {
     date: Date,
     name: string
 }
 
-export class EventsService implements IMessageable {
+export class EventsPlugin implements IPlugin {
     events: Event[] = [
         {
-            date: new Date('2023-07-02'),
-            name: 'move out from the apparments at Krasica',
+            date: new Date('2023-12-27'),
+            name: 'Some test event will happen',
         },
     ]
 

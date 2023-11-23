@@ -1,7 +1,6 @@
 import { Context, NarrowedContext, Telegraf } from "telegraf";
-import { Message, Update } from "telegraf/typings/core/types/typegram";
-import { MountMap } from "telegraf/typings/telegram-types";
-import { IMessageBroker } from "../interfaces/message-broker.interface";
+import { Message, Update } from "telegraf/types";
+import { IMessageBroker } from "../daily-bro/interfaces/message-broker.interface";
 
 interface SendMessageOptions {
   chatId: string;
