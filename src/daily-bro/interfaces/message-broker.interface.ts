@@ -1,3 +1,3 @@
 export interface IMessageBroker {
-    sendMessage(...args: unknown[]): Promise<void>
+    sendMessage(...args: unknown[]): Promise<void>;
 }

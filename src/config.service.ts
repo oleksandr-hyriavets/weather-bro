@@ -3,7 +3,7 @@ class ConfigService {
         const result = process.env[key];
 
         if (!result) {
-            throw new Error(`Can not find ${key} in config`)
+            throw new Error(`Can not find ${key} in config`);
         }
 
         return result;

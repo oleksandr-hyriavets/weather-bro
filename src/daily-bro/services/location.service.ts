@@ -1,4 +1,4 @@
-const DEFAULT_LOCATION = 'Kyiv'
+const DEFAULT_LOCATION = 'Kyiv';
 
 export class LocationService {
     private location: string = DEFAULT_LOCATION;

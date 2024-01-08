@@ -1,3 +1,3 @@
 export interface BaseFormatter {
-    format(dto: unknown): string
+    format(dto: unknown): string;
 }

@@ -1,57 +1,62 @@
-import Koa from "koa";
-import Router from "@koa/router";
+import Koa from 'koa';
+import Router from '@koa/router';
 
-import { ConfigService } from "../config.service";
-import { TelegramService } from "../message-brokers/telegram.service";
-import { dailyInfoController } from "./controllers/daily-info.controller";
-import { IMessageBroker } from "./interfaces/message-broker.interface";
+import { ConfigService } from '../config.service';
+import { dailyInfoController } from './controllers/daily-info.controller';
+import { IMessageBroker } from './interfaces/message-broker.interface';
 
 type PluginParams = {
     city?: string;
-}
+};
 
 export interface IPlugin {
-    getMessage(params?: PluginParams): Promise<string>
+    // @todo - fix the eslint to remove the eslint-disable
+    // eslint-disable-next-line no-unused-vars
+    getMessage(params?: PluginParams): Promise<string>;
 }
 
 type Params = {
-    plugins: IPlugin[]
-    messageBroker: IMessageBroker
-}
+    plugins: IPlugin[];
+    messageBroker: IMessageBroker;
+};
 
 export class DailyBro {
-    private port = ConfigService.get('PORT') || 5000
+    private port = ConfigService.get('PORT') || 5000;
 
-    private router: Router<Koa.DefaultState, Koa.DefaultContext>
-    private app: Koa<Koa.DefaultState, Koa.DefaultContext>
+    private router: Router<Koa.DefaultState, Koa.DefaultContext>;
+    private app: Koa<Koa.DefaultState, Koa.DefaultContext>;
 
-    private messageBroker: IMessageBroker
+    private messageBroker: IMessageBroker;
 
-    private plugins: IPlugin[] = []
+    private plugins: IPlugin[] = [];
 
     constructor(params: Params) {
-        this.plugins = params.plugins
+        this.plugins = params.plugins;
 
-        this.app = new Koa()
-        this.router = new Router()
-        this.messageBroker = params.messageBroker
+        this.app = new Koa();
+        this.router = new Router();
+        this.messageBroker = params.messageBroker;
     }
 
     start(): void {
-        this.defineEndpoints()
+        this.defineEndpoints();
 
-        const handleListening = () => console.log(`Listening on port ${this.port}`)
+        const handleListening = () =>
+            console.log(`Listening on port ${this.port}`);
 
-        this.app.use(this.router.routes())
+        this.app
+            .use(this.router.routes())
             .use(this.router.allowedMethods())
             .listen(this.port)
-            .on('listening', handleListening)
+            .on('listening', handleListening);
     }
 
     defineEndpoints(): void {
-        this.router.get("/daily-info", (ctx) => dailyInfoController(ctx, {
-            messageBroker: this.messageBroker,
-            plugins: this.plugins,
-        }));
+        this.router.get('/daily-info', (ctx) =>
+            dailyInfoController(ctx, {
+                messageBroker: this.messageBroker,
+                plugins: this.plugins,
+            }),
+        );
     }
 }
