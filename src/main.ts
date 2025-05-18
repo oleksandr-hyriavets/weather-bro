@@ -19,6 +19,4 @@ const dailyBro = new DailyBro({
     ],
 });
 
-console.log('Starting daily bro');
-
 dailyBro.start();
