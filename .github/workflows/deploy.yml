@@ -19,10 +19,16 @@ jobs:
       run: |
         docker build -t weather-bro-app:latest .
         docker stop weather-bro-app || true && docker rm weather-bro-app || true
-        docker run -d --name weather-bro-app -p 3000:3000 \
+        docker run -d --name weather-bro-app -p 3000:3000 --restart unless-stopped \
           -e PORT=$PORT \
           -e TG_BOT_TOKEN=$TG_BOT_TOKEN \
           -e CHAT_ID=$CHAT_ID \
           -e WEATHER_API_KEY=$WEATHER_API_KEY \
           -e FREE_ASTROLOGY_API_KEY=$FREE_ASTROLOGY_API_KEY \
           weather-bro-app:latest
+
+    - name: Verify Deployment
+      run: |
+        sleep 5
+        docker ps | grep weather-bro-app || echo "Container not running!"
+        docker logs weather-bro-app --tail 10
