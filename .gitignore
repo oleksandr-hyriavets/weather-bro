@@ -1,7 +1,6 @@
 .env
 node_modules
 .vscode
-yarn.lock
 dist
 gc.json
 gt.json
