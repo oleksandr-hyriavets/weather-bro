@@ -1,20 +1,15 @@
-name: Deploy
-
-on: [push]
+name: Deploy to Pi
+on:
+  push:
+    branches: [main]
 
 jobs:
-  push-docker-image:
-    runs-on: ubuntu-latest
-
+  deploy:
+    runs-on: [self-hosted, linux, ARM64]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build the Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/weather-bro .
-
-      - name: Push the Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/weather-bro
+    - uses: actions/checkout@v3
+    - name: Deploy
+      run: |
+        docker build -t weather-bro-app:latest .
+        docker stop weather-bro-app || true && docker rm weather-bro-app || true
+        docker run -d --name weather-bro-app -p 3000:3000 --restart unless-stopped weather-bro-app:latest
