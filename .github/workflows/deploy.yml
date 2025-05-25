@@ -6,10 +6,23 @@ on:
 jobs:
   deploy:
     runs-on: [self-hosted, linux, ARM64]
+    env:
+      PORT: 3000
+      TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+      CHAT_ID: ${{ secrets.CHAT_ID }}
+      WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+      FREE_ASTROLOGY_API_KEY: ${{ secrets.FREE_ASTROLOGY_API_KEY }}
+
     steps:
     - uses: actions/checkout@v3
     - name: Deploy
       run: |
         docker build -t weather-bro-app:latest .
         docker stop weather-bro-app || true && docker rm weather-bro-app || true
-        docker run -d --name weather-bro-app -p 3000:3000 --restart unless-stopped weather-bro-app:latest
+        docker run -d --name weather-bro-app -p 3000:3000 \
+          -e PORT=$PORT \
+          -e TG_BOT_TOKEN=$TG_BOT_TOKEN \
+          -e CHAT_ID=$CHAT_ID \
+          -e WEATHER_API_KEY=$WEATHER_API_KEY \
+          -e FREE_ASTROLOGY_API_KEY=$FREE_ASTROLOGY_API_KEY \
+          weather-bro-app:latest
