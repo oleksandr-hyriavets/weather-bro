@@ -9,10 +9,7 @@ RUN npm install
 COPY . .
 
 RUN npm run build
-
-# Debug: List what was created
-RUN ls -la /usr/src/app/
-RUN ls -la /usr/src/app/dist/ || echo "dist folder not found"
+RUN ls -l dist
 
 EXPOSE 3000
 
